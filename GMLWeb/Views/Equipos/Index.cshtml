@@ -1,0 +1,70 @@
+﻿@model IEnumerable<GMLWeb.Models.Equipo>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.serie)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fabricante)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_compra)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_produccion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Local.nombre)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.serie)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.descripcion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fabricante)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fecha_compra)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fecha_produccion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Local.nombre)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.codigo }) |
+            @Html.ActionLink("Details", "Details", new { id=item.codigo }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.codigo })
+        </td>
+    </tr>
+}
+
+</table>

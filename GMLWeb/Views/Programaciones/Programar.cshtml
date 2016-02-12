@@ -1,0 +1,117 @@
+﻿@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            
+            $('input[name="fecprogramada"]').datetimepicker({
+                format: "DD/MM/YYYY HH:mm",
+                defaultDate: moment(),
+                locale: "es"
+            });
+
+            $("#form-programar").validate({
+                rules: {
+                    fecprogramada: "required",
+                    tecnico: "required"
+                },
+                messages: {
+                    fecprogramada: "Por favor ingrese la fecha de programación",
+                    tecnico: "Por favor asigne un técnico"
+                }
+            });
+
+        });
+    </script>
+}
+
+<div class="page-header">
+    <h2>Programar Mantenimiento Correctivo</h2>
+    @{ViewBag.Title = "Programar Mantenimiento Correctivo";}
+</div>
+
+@using (Html.BeginForm("Registrar", "Programaciones", FormMethod.Post, new { id = "form-programar", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label for="numero" class="col-sm-2 control-label">Nro de Ticket</label>
+        <div class="col-sm-10">
+            @Html.TextBox("numero", ViewBag.solicitud.numero as string, new { id = "numero", @class = "form-control", disabled = true })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="fecha" class="col-sm-2 control-label">Fecha de Ticket</label>
+        <div class="col-sm-10">
+            @Html.TextBox("fecha", String.Format("{0:dd/MM/yyyy}", ViewBag.solicitud.fecha) as string, new { id = "fecha", @class = "form-control", disabled = true })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="local" class="col-sm-2 control-label">Local</label>
+        <div class="col-sm-10">
+            @Html.TextBox("local", ViewBag.solicitud.Equipo.Local.nombre as string, new { id = "local", @class = "form-control", disabled = true })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="solicitante" class="col-sm-2 control-label">Solicitado por</label>
+        <div class="col-sm-10">
+            @Html.TextBox("solicitante", ViewBag.solicitud.solicitante as string, new { id = "solicitante", @class = "form-control", disabled = true })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="equipo" class="col-sm-2 control-label">Equipo a atender</label>
+        <div class="col-sm-10">
+            @Html.TextBox("equipo", ViewBag.solicitud.Equipo.nombre as string, new { id = "equipo", @class = "form-control", disabled = true })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="serie" class="col-sm-2 control-label">Código de Equipo</label>
+        <div class="col-sm-10">
+            @Html.TextBox("serie", ViewBag.solicitud.Equipo.serie as string, new { id = "serie", @class = "form-control", disabled = true })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="descripcion" class="col-sm-2 control-label">Descripción del Problema</label>
+        <div class="col-sm-10">
+            @Html.TextArea("descripcion", ViewBag.solicitud.descripcion as string, new { id = "descripcion", @class = "form-control", disabled = true })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="estado" class="col-sm-2 control-label">Situación Actual</label>
+        <div class="col-sm-10">
+            @Html.TextBox("estado", (ViewBag.solicitud.estado == "G")?"PROGRAMADO":"REGISTRADO" as string, new { id = "estado", @class = "form-control", disabled = true })
+        </div>
+    </div>
+
+    <hr/>
+
+    <div class="form-group">
+        <label for="fecprogramada" class="col-sm-2 control-label">Fecha de Programacion</label>
+        <div class="col-sm-10">
+            @Html.TextBox("fecprogramada", null, new { id = "fecprogramada", @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="tecnico" class="col-sm-2 control-label">Técnico Asignado</label>
+        <div class="col-sm-10">
+            @Html.DropDownList("tecnico", ViewBag.tecnicos as SelectList, "-- Seleccione un técnico --", new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-2">
+            @Html.Hidden("codigo", (int)ViewBag.solicitud.codigo)
+            @Html.Hidden("codigo_equipo", (int)ViewBag.solicitud.Equipo.codigo)
+        </div>
+        <div class="col-sm-10">
+            <input type="submit" value="Grabar Programación" class="btn btn-primary" />
+        </div>
+    </div>
+  
+}

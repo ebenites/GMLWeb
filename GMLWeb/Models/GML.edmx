@@ -1,0 +1,401 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="gmlModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Equipo">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="serie" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="descripcion" Type="varchar(max)" />
+          <Property Name="fabricante" Type="varchar" MaxLength="50" />
+          <Property Name="fecha_compra" Type="date" />
+          <Property Name="fecha_produccion" Type="date" />
+          <Property Name="codigo_local" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Local">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ubicacion" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="OrdenServicio">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="numero" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="observacion" Type="varchar(max)" />
+          <Property Name="fecha" Type="datetime" Nullable="false" />
+          <Property Name="estado" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="codigo_equipo" Type="int" Nullable="false" />
+          <Property Name="codigo_tecnico" Type="int" Nullable="false" />
+          <Property Name="codigo_solicitud" Type="int" />
+        </EntityType>
+        <EntityType Name="Solicitud">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="numero" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="descripcion" Type="varchar(max)" Nullable="false" />
+          <Property Name="solicitante" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="codigo_equipo" Type="int" Nullable="false" />
+          <Property Name="fecha" Type="date" Nullable="false" />
+          <Property Name="estado" Type="char" MaxLength="1" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tecnico">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="dni" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="nombres" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="apellidos" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="especialidad" Type="varchar" MaxLength="100" />
+          <Property Name="tipo" Type="char" MaxLength="1" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Equipo_Local">
+          <End Role="Local" Type="Self.Local" Multiplicity="1" />
+          <End Role="Equipo" Type="Self.Equipo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Local">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="Equipo">
+              <PropertyRef Name="codigo_local" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdenServicio_Equipo">
+          <End Role="Equipo" Type="Self.Equipo" Multiplicity="1" />
+          <End Role="OrdenServicio" Type="Self.OrdenServicio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Equipo">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="OrdenServicio">
+              <PropertyRef Name="codigo_equipo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdenServicio_Solicitud">
+          <End Role="Solicitud" Type="Self.Solicitud" Multiplicity="0..1" />
+          <End Role="OrdenServicio" Type="Self.OrdenServicio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Solicitud">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="OrdenServicio">
+              <PropertyRef Name="codigo_solicitud" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdenServicio_Tecnico">
+          <End Role="Tecnico" Type="Self.Tecnico" Multiplicity="1" />
+          <End Role="OrdenServicio" Type="Self.OrdenServicio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tecnico">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="OrdenServicio">
+              <PropertyRef Name="codigo_tecnico" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Solicitud_Equipo">
+          <End Role="Equipo" Type="Self.Equipo" Multiplicity="1" />
+          <End Role="Solicitud" Type="Self.Solicitud" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Equipo">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="Solicitud">
+              <PropertyRef Name="codigo_equipo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="gmlModelStoreContainer">
+          <EntitySet Name="Equipo" EntityType="Self.Equipo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Local" EntityType="Self.Local" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrdenServicio" EntityType="Self.OrdenServicio" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Solicitud" EntityType="Self.Solicitud" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tecnico" EntityType="Self.Tecnico" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Equipo_Local" Association="Self.FK_Equipo_Local">
+            <End Role="Local" EntitySet="Local" />
+            <End Role="Equipo" EntitySet="Equipo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdenServicio_Equipo" Association="Self.FK_OrdenServicio_Equipo">
+            <End Role="Equipo" EntitySet="Equipo" />
+            <End Role="OrdenServicio" EntitySet="OrdenServicio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdenServicio_Solicitud" Association="Self.FK_OrdenServicio_Solicitud">
+            <End Role="Solicitud" EntitySet="Solicitud" />
+            <End Role="OrdenServicio" EntitySet="OrdenServicio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdenServicio_Tecnico" Association="Self.FK_OrdenServicio_Tecnico">
+            <End Role="Tecnico" EntitySet="Tecnico" />
+            <End Role="OrdenServicio" EntitySet="OrdenServicio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Solicitud_Equipo" Association="Self.FK_Solicitud_Equipo">
+            <End Role="Equipo" EntitySet="Equipo" />
+            <End Role="Solicitud" EntitySet="Solicitud" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="gmlModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Equipo">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="serie" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="descripcion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="fabricante" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="fecha_compra" Type="DateTime" Precision="0" />
+          <Property Name="fecha_produccion" Type="DateTime" Precision="0" />
+          <Property Name="codigo_local" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Local" Relationship="Self.FK_Equipo_Local" FromRole="Equipo" ToRole="Local" />
+          <NavigationProperty Name="Solicitud" Relationship="Self.FK_Solicitud_Equipo" FromRole="Equipo" ToRole="Solicitud" />
+          <NavigationProperty Name="OrdenServicio" Relationship="gmlModel.FK_OrdenServicio_Equipo" FromRole="Equipo" ToRole="OrdenServicio" />
+        </EntityType>
+        <EntityType Name="Local">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ubicacion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Equipo" Relationship="Self.FK_Equipo_Local" FromRole="Local" ToRole="Equipo" />
+        </EntityType>
+        <EntityType Name="Solicitud">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="numero" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="descripcion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="solicitante" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="codigo_equipo" Type="Int32" Nullable="false" />
+          <Property Name="fecha" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="estado" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Equipo" Relationship="Self.FK_Solicitud_Equipo" FromRole="Solicitud" ToRole="Equipo" />
+          <NavigationProperty Name="OrdenServicio" Relationship="gmlModel.FK_OrdenServicio_Solicitud" FromRole="Solicitud" ToRole="OrdenServicio" />
+        </EntityType>
+        <Association Name="FK_Equipo_Local">
+          <End Role="Local" Type="Self.Local" Multiplicity="1" />
+          <End Role="Equipo" Type="Self.Equipo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Local">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="Equipo">
+              <PropertyRef Name="codigo_local" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Solicitud_Equipo">
+          <End Role="Equipo" Type="Self.Equipo" Multiplicity="1" />
+          <End Role="Solicitud" Type="Self.Solicitud" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Equipo">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="Solicitud">
+              <PropertyRef Name="codigo_equipo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="GMLConnectionString" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Equipo" EntityType="Self.Equipo" />
+          <EntitySet Name="Local" EntityType="Self.Local" />
+          <EntitySet Name="Solicitud" EntityType="Self.Solicitud" />
+          <AssociationSet Name="FK_Equipo_Local" Association="Self.FK_Equipo_Local">
+            <End Role="Local" EntitySet="Local" />
+            <End Role="Equipo" EntitySet="Equipo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Solicitud_Equipo" Association="Self.FK_Solicitud_Equipo">
+            <End Role="Equipo" EntitySet="Equipo" />
+            <End Role="Solicitud" EntitySet="Solicitud" />
+          </AssociationSet>
+          <EntitySet Name="OrdenServicio" EntityType="gmlModel.OrdenServicio" />
+          <EntitySet Name="Tecnico" EntityType="gmlModel.Tecnico" />
+          <AssociationSet Name="FK_OrdenServicio_Equipo" Association="gmlModel.FK_OrdenServicio_Equipo">
+            <End Role="Equipo" EntitySet="Equipo" />
+            <End Role="OrdenServicio" EntitySet="OrdenServicio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdenServicio_Solicitud" Association="gmlModel.FK_OrdenServicio_Solicitud">
+            <End Role="Solicitud" EntitySet="Solicitud" />
+            <End Role="OrdenServicio" EntitySet="OrdenServicio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdenServicio_Tecnico" Association="gmlModel.FK_OrdenServicio_Tecnico">
+            <End Role="Tecnico" EntitySet="Tecnico" />
+            <End Role="OrdenServicio" EntitySet="OrdenServicio" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="OrdenServicio">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="numero" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="observacion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="fecha" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="estado" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="codigo_equipo" Type="Int32" Nullable="false" />
+          <Property Name="codigo_tecnico" Type="Int32" Nullable="false" />
+          <Property Name="codigo_solicitud" Type="Int32" />
+          <NavigationProperty Name="Equipo" Relationship="gmlModel.FK_OrdenServicio_Equipo" FromRole="OrdenServicio" ToRole="Equipo" />
+          <NavigationProperty Name="Solicitud" Relationship="gmlModel.FK_OrdenServicio_Solicitud" FromRole="OrdenServicio" ToRole="Solicitud" />
+          <NavigationProperty Name="Tecnico" Relationship="gmlModel.FK_OrdenServicio_Tecnico" FromRole="OrdenServicio" ToRole="Tecnico" />
+        </EntityType>
+        <EntityType Name="Tecnico">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="dni" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="nombres" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="apellidos" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="especialidad" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="tipo" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="OrdenServicio" Relationship="gmlModel.FK_OrdenServicio_Tecnico" FromRole="Tecnico" ToRole="OrdenServicio" />
+        </EntityType>
+        <Association Name="FK_OrdenServicio_Equipo">
+          <End Type="gmlModel.Equipo" Role="Equipo" Multiplicity="1" />
+          <End Type="gmlModel.OrdenServicio" Role="OrdenServicio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Equipo">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="OrdenServicio">
+              <PropertyRef Name="codigo_equipo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdenServicio_Solicitud">
+          <End Type="gmlModel.Solicitud" Role="Solicitud" Multiplicity="0..1" />
+          <End Type="gmlModel.OrdenServicio" Role="OrdenServicio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Solicitud">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="OrdenServicio">
+              <PropertyRef Name="codigo_solicitud" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdenServicio_Tecnico">
+          <End Type="gmlModel.Tecnico" Role="Tecnico" Multiplicity="1" />
+          <End Type="gmlModel.OrdenServicio" Role="OrdenServicio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tecnico">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="OrdenServicio">
+              <PropertyRef Name="codigo_tecnico" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="gmlModelStoreContainer" CdmEntityContainer="GMLConnectionString">
+          <EntitySetMapping Name="Equipo">
+            <EntityTypeMapping TypeName="gmlModel.Equipo">
+              <MappingFragment StoreEntitySet="Equipo">
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+                <ScalarProperty Name="serie" ColumnName="serie" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+                <ScalarProperty Name="fabricante" ColumnName="fabricante" />
+                <ScalarProperty Name="fecha_compra" ColumnName="fecha_compra" />
+                <ScalarProperty Name="fecha_produccion" ColumnName="fecha_produccion" />
+                <ScalarProperty Name="codigo_local" ColumnName="codigo_local" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Local">
+            <EntityTypeMapping TypeName="gmlModel.Local">
+              <MappingFragment StoreEntitySet="Local">
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="ubicacion" ColumnName="ubicacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Solicitud">
+            <EntityTypeMapping TypeName="gmlModel.Solicitud">
+              <MappingFragment StoreEntitySet="Solicitud">
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+                <ScalarProperty Name="numero" ColumnName="numero" />
+                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+                <ScalarProperty Name="solicitante" ColumnName="solicitante" />
+                <ScalarProperty Name="codigo_equipo" ColumnName="codigo_equipo" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrdenServicio">
+            <EntityTypeMapping TypeName="gmlModel.OrdenServicio">
+              <MappingFragment StoreEntitySet="OrdenServicio">
+                <ScalarProperty Name="codigo_solicitud" ColumnName="codigo_solicitud" />
+                <ScalarProperty Name="codigo_tecnico" ColumnName="codigo_tecnico" />
+                <ScalarProperty Name="codigo_equipo" ColumnName="codigo_equipo" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+                <ScalarProperty Name="observacion" ColumnName="observacion" />
+                <ScalarProperty Name="numero" ColumnName="numero" />
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tecnico">
+            <EntityTypeMapping TypeName="gmlModel.Tecnico">
+              <MappingFragment StoreEntitySet="Tecnico">
+                <ScalarProperty Name="tipo" ColumnName="tipo" />
+                <ScalarProperty Name="especialidad" ColumnName="especialidad" />
+                <ScalarProperty Name="apellidos" ColumnName="apellidos" />
+                <ScalarProperty Name="nombres" ColumnName="nombres" />
+                <ScalarProperty Name="dni" ColumnName="dni" />
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

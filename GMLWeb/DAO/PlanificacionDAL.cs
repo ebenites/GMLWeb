@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using GMLWeb.Models;
 using System.Data.SqlClient;
+using System.Data;
+using System.Data.Entity;
 
 namespace GMLWeb.DAO
 {
@@ -40,13 +42,28 @@ namespace GMLWeb.DAO
             return planlocales;
         }
 
+        public int totalCronogramaActividades(int anio)
+        {
+            string sql = "select count(*) as total " +
+                "from cronogramadetalle d " +
+                "inner join cronograma c on c.codigo = d.codigo_cronograma and c.anio = @anio";
+
+            int total = db.Database.SqlQuery<int>(sql, new SqlParameter("anio", anio)).SingleOrDefault();
+
+            return total;
+        }
+
         public List<Tecnico> listarTecnicos(int anio, string tipo)
         {
             string sql = "select codigo, dni, nombres, apellidos, especialidad, tipo from tecnico t " +
-                "where not exists( " +
-                "   select * from disponibilidad d " +
-                "   inner join planmantenimiento p on p.codigo = d.codigo_plan and p.anio = @anio " +
-                "   where codigo_tecnico = t.codigo " +
+                "where exists( " +
+                "   select c.anio, d.semana " +
+                "   from cronogramadetalle d " +
+                "   inner join cronograma c on c.codigo = d.codigo_cronograma and c.anio = @anio " +
+                "   except " +
+                "   select d.anio, d.semana " +
+                "   from disponibilidad d " +
+                "   where d.anio = @anio and d.codigo_tecnico = t.codigo " +
                 ") ";
 
             if(tipo != String.Empty)
@@ -59,8 +76,10 @@ namespace GMLWeb.DAO
             return tecnicos;
         }
 
-        public int generar(int vanio, int vlocal, List<int> vtecnicos)
+        public void generar(int vanio, int vlocal, List<int> vtecnicos)
         {
+            System.Diagnostics.Debug.WriteLine("generar:" + vanio + " - " + vlocal + " - " + vtecnicos);
+
             using (var tx = db.Database.BeginTransaction())
             {
                 try
@@ -77,43 +96,82 @@ namespace GMLWeb.DAO
 
                     db.SaveChanges();
 
-                    // Registrando cambio de disponibilidad por cada técnico
+                    // Listar las actividades de cada cronograma del año-local
 
-                    foreach(int vtecnico in vtecnicos)
+                    /*
+                    select d.codigo, d.semana 
+                    from CronogramaDetalle d
+                    inner join Cronograma c on c.codigo = d.codigo_cronograma and c.anio = 2015
+                    inner join Equipo e on e.codigo = c.codigo_equipo and e.codigo_local = 1
+                    */
+
+                    List<CronogramaDetalle> detalles = db.CronogramaDetalle.Include(x => x.Cronograma).Include(x => x.Cronograma.Equipo)
+                        .Where(x => x.Cronograma.anio == vanio && x.Cronograma.Equipo.codigo_local == vlocal).ToList();
+
+                    int i = 0;
+                    foreach (CronogramaDetalle detalle in detalles)
                     {
-                        Disponibilidad disponibilidad = new Disponibilidad
+
+                        System.Diagnostics.Debug.WriteLine("CronogramaDetalle:" + detalle);
+
+                        // Seleccionando Técnico disponible
+                        do
                         {
-                            codigo_plan = plan.codigo,
-                            codigo_tecnico = vtecnico
-                        };
-                        db.Disponibilidad.Add(disponibilidad);
+                            int vtecnico = vtecnicos.ElementAt(i++);
+                            List<Disponibilidad> disponibilidades = db.Disponibilidad.Where(x => x.codigo_tecnico == vtecnico && x.anio == detalle.Cronograma.anio && x.semana == detalle.semana).ToList();
+                            System.Diagnostics.Debug.WriteLine("Disponibilidad: TECNICO: " + vtecnico + " ANIO:" + detalle.Cronograma.anio + " SEMANA:" + detalle.semana);
+                            System.Diagnostics.Debug.WriteLine("Disponible?:" + disponibilidades.Count);
+
+                            if (disponibilidades.Count == 0)
+                            {
+
+                                // Técnico encontrado, registrando disponibilidad
+                                System.Diagnostics.Debug.WriteLine("Técnico asignado:" + vtecnico);
+
+                                Disponibilidad disponibilidad = new Disponibilidad
+                                {
+                                    codigo_tecnico = vtecnico,
+                                    anio = detalle.Cronograma.anio,
+                                    semana = detalle.semana
+                                };
+                                db.Disponibilidad.Add(disponibilidad);
+
+                                db.SaveChanges();
+
+                                // Registrando  Detalle del PanMantenimiento
+
+                                PlanMantenimientoDetalle plandetalle = new PlanMantenimientoDetalle
+                                {
+                                    codigo_planmantenimiento = plan.codigo,
+                                    codigo_cronogramadetalle = detalle.codigo,
+                                    codigo_disponibilidad = disponibilidad.codigo
+                                };
+                                db.PlanMantenimientoDetalle.Add(plandetalle);
+
+                                db.SaveChanges();
+
+                                break;
+                            }
+
+                            if(i == vtecnicos.Count)
+                            {
+                                throw new Exception("No existe técnicos disponibles para la semana " + detalle.semana + " en el año " + detalle.Cronograma.anio);
+                            }
+
+                        } while (true);
+                        
                     }
                     
-                    // Consultar cronogrma de cada equipo por local
-
-                    // Generar orden de servicio por cada actividad
-
-                    /*db.Database.ExecuteSqlCommand(
-                        @"UPDATE Blogs SET Rating = 5" +
-                            " WHERE Name LIKE '%Entity Framework%'"
-                        );
-
-                    var query = db.Posts.Where(p => p.Blog.Rating >= 5);
-                    foreach (var post in query)
-                    {
-                        post.Title += "[Cool Blog]";
-                    }*/
-
                     db.SaveChanges();
 
                     tx.Commit();
+                    
                 }
                 catch (Exception)
                 {
                     tx.Rollback();
                 }
             }
-            return 0;
         }
 
     }

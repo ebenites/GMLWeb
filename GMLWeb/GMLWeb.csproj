@@ -198,12 +198,17 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CronogramaDetallesController.cs" />
+    <Compile Include="Controllers\CronogramasController.cs" />
+    <Compile Include="Controllers\DisponibilidadesController.cs" />
     <Compile Include="Controllers\EquiposController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LocalesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\OrdenServiciosController.cs" />
     <Compile Include="Controllers\PlanificacionesController.cs" />
+    <Compile Include="Controllers\PlanMantenimientoDetallesController.cs" />
+    <Compile Include="Controllers\PlanMantenimientosController.cs" />
     <Compile Include="Controllers\SolicitudesController.cs" />
     <Compile Include="Controllers\TecnicosController.cs" />
     <Compile Include="DAO\IPlanificacionDAL.cs" />
@@ -214,6 +219,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Cronograma.cs">
+      <DependentUpon>GML.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CronogramaDetalle.cs">
+      <DependentUpon>GML.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Disponibilidad.cs">
       <DependentUpon>GML.tt</DependentUpon>
     </Compile>
@@ -246,6 +257,9 @@
     </Compile>
     <Compile Include="Models\PlanLocal.cs" />
     <Compile Include="Models\PlanMantenimiento.cs">
+      <DependentUpon>GML.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PlanMantenimientoDetalle.cs">
       <DependentUpon>GML.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Solicitud.cs">
@@ -450,6 +464,31 @@
     <Content Include="Views\Planificaciones\Index.cshtml" />
     <Content Include="Views\Planificaciones\ListarLocales.cshtml" />
     <Content Include="Views\Planificaciones\ListarTecnicos.cshtml" />
+    <Content Include="Views\PlanMantenimientos\Create.cshtml" />
+    <Content Include="Views\PlanMantenimientos\Delete.cshtml" />
+    <Content Include="Views\PlanMantenimientos\Details.cshtml" />
+    <Content Include="Views\PlanMantenimientos\Edit.cshtml" />
+    <Content Include="Views\PlanMantenimientos\Index.cshtml" />
+    <Content Include="Views\PlanMantenimientoDetalles\Create.cshtml" />
+    <Content Include="Views\PlanMantenimientoDetalles\Delete.cshtml" />
+    <Content Include="Views\PlanMantenimientoDetalles\Details.cshtml" />
+    <Content Include="Views\PlanMantenimientoDetalles\Edit.cshtml" />
+    <Content Include="Views\PlanMantenimientoDetalles\Index.cshtml" />
+    <Content Include="Views\Disponibilidades\Create.cshtml" />
+    <Content Include="Views\Disponibilidades\Delete.cshtml" />
+    <Content Include="Views\Disponibilidades\Details.cshtml" />
+    <Content Include="Views\Disponibilidades\Edit.cshtml" />
+    <Content Include="Views\Disponibilidades\Index.cshtml" />
+    <Content Include="Views\Cronogramas\Create.cshtml" />
+    <Content Include="Views\Cronogramas\Delete.cshtml" />
+    <Content Include="Views\Cronogramas\Details.cshtml" />
+    <Content Include="Views\Cronogramas\Edit.cshtml" />
+    <Content Include="Views\Cronogramas\Index.cshtml" />
+    <Content Include="Views\CronogramaDetalles\Create.cshtml" />
+    <Content Include="Views\CronogramaDetalles\Delete.cshtml" />
+    <Content Include="Views\CronogramaDetalles\Details.cshtml" />
+    <Content Include="Views\CronogramaDetalles\Edit.cshtml" />
+    <Content Include="Views\CronogramaDetalles\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

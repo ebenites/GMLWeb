@@ -5,13 +5,32 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="gmlModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Cronograma">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="anio" Type="int" Nullable="false" />
+          <Property Name="codigo_equipo" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CronogramaDetalle">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="codigo_cronograma" Type="int" Nullable="false" />
+          <Property Name="semana" Type="int" Nullable="false" />
+          <Property Name="actividad" Type="varchar(max)" Nullable="false" />
+          <Property Name="asignada" Type="char" MaxLength="1" />
+        </EntityType>
         <EntityType Name="Disponibilidad">
           <Key>
             <PropertyRef Name="codigo" />
           </Key>
           <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="codigo_plan" Type="int" Nullable="false" />
           <Property Name="codigo_tecnico" Type="int" Nullable="false" />
+          <Property Name="anio" Type="int" Nullable="false" />
+          <Property Name="semana" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Equipo">
           <Key>
@@ -55,6 +74,15 @@
           <Property Name="anio" Type="int" Nullable="false" />
           <Property Name="codigo_local" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="PlanMantenimientoDetalle">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="codigo_planmantenimiento" Type="int" Nullable="false" />
+          <Property Name="codigo_cronogramadetalle" Type="int" Nullable="false" />
+          <Property Name="codigo_disponibilidad" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Solicitud">
           <Key>
             <PropertyRef Name="codigo" />
@@ -78,15 +106,27 @@
           <Property Name="especialidad" Type="varchar" MaxLength="100" />
           <Property Name="tipo" Type="char" MaxLength="1" Nullable="false" />
         </EntityType>
-        <Association Name="FK_Disponibilidad_PlanMantenimiento">
-          <End Role="PlanMantenimiento" Type="Self.PlanMantenimiento" Multiplicity="1" />
-          <End Role="Disponibilidad" Type="Self.Disponibilidad" Multiplicity="*" />
+        <Association Name="FK_Cronograma_Equipo">
+          <End Role="Equipo" Type="Self.Equipo" Multiplicity="1" />
+          <End Role="Cronograma" Type="Self.Cronograma" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="PlanMantenimiento">
+            <Principal Role="Equipo">
               <PropertyRef Name="codigo" />
             </Principal>
-            <Dependent Role="Disponibilidad">
-              <PropertyRef Name="codigo_plan" />
+            <Dependent Role="Cronograma">
+              <PropertyRef Name="codigo_equipo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CronogramaDetalle_Cronograma">
+          <End Role="Cronograma" Type="Self.Cronograma" Multiplicity="1" />
+          <End Role="CronogramaDetalle" Type="Self.CronogramaDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cronograma">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="CronogramaDetalle">
+              <PropertyRef Name="codigo_cronograma" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -162,6 +202,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PlanMantenimientoDetalle_CronogramaDetalle">
+          <End Role="CronogramaDetalle" Type="Self.CronogramaDetalle" Multiplicity="1" />
+          <End Role="PlanMantenimientoDetalle" Type="Self.PlanMantenimientoDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CronogramaDetalle">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="PlanMantenimientoDetalle">
+              <PropertyRef Name="codigo_cronogramadetalle" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlanMantenimientoDetalle_Disponibilidad">
+          <End Role="Disponibilidad" Type="Self.Disponibilidad" Multiplicity="1" />
+          <End Role="PlanMantenimientoDetalle" Type="Self.PlanMantenimientoDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Disponibilidad">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="PlanMantenimientoDetalle">
+              <PropertyRef Name="codigo_disponibilidad" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlanMantenimientoDetalle_PlanMantenimiento">
+          <End Role="PlanMantenimiento" Type="Self.PlanMantenimiento" Multiplicity="1" />
+          <End Role="PlanMantenimientoDetalle" Type="Self.PlanMantenimientoDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PlanMantenimiento">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="PlanMantenimientoDetalle">
+              <PropertyRef Name="codigo_planmantenimiento" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Solicitud_Equipo">
           <End Role="Equipo" Type="Self.Equipo" Multiplicity="1" />
           <End Role="Solicitud" Type="Self.Solicitud" Multiplicity="*" />
@@ -175,16 +251,23 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="gmlModelStoreContainer">
+          <EntitySet Name="Cronograma" EntityType="Self.Cronograma" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CronogramaDetalle" EntityType="Self.CronogramaDetalle" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Disponibilidad" EntityType="Self.Disponibilidad" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Equipo" EntityType="Self.Equipo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Local" EntityType="Self.Local" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrdenServicio" EntityType="Self.OrdenServicio" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PlanMantenimiento" EntityType="Self.PlanMantenimiento" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlanMantenimientoDetalle" EntityType="Self.PlanMantenimientoDetalle" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Solicitud" EntityType="Self.Solicitud" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tecnico" EntityType="Self.Tecnico" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Disponibilidad_PlanMantenimiento" Association="Self.FK_Disponibilidad_PlanMantenimiento">
-            <End Role="PlanMantenimiento" EntitySet="PlanMantenimiento" />
-            <End Role="Disponibilidad" EntitySet="Disponibilidad" />
+          <AssociationSet Name="FK_Cronograma_Equipo" Association="Self.FK_Cronograma_Equipo">
+            <End Role="Equipo" EntitySet="Equipo" />
+            <End Role="Cronograma" EntitySet="Cronograma" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CronogramaDetalle_Cronograma" Association="Self.FK_CronogramaDetalle_Cronograma">
+            <End Role="Cronograma" EntitySet="Cronograma" />
+            <End Role="CronogramaDetalle" EntitySet="CronogramaDetalle" />
           </AssociationSet>
           <AssociationSet Name="FK_Disponibilidad_Tecnico" Association="Self.FK_Disponibilidad_Tecnico">
             <End Role="Tecnico" EntitySet="Tecnico" />
@@ -210,6 +293,18 @@
             <End Role="Local" EntitySet="Local" />
             <End Role="PlanMantenimiento" EntitySet="PlanMantenimiento" />
           </AssociationSet>
+          <AssociationSet Name="FK_PlanMantenimientoDetalle_CronogramaDetalle" Association="Self.FK_PlanMantenimientoDetalle_CronogramaDetalle">
+            <End Role="CronogramaDetalle" EntitySet="CronogramaDetalle" />
+            <End Role="PlanMantenimientoDetalle" EntitySet="PlanMantenimientoDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlanMantenimientoDetalle_Disponibilidad" Association="Self.FK_PlanMantenimientoDetalle_Disponibilidad">
+            <End Role="Disponibilidad" EntitySet="Disponibilidad" />
+            <End Role="PlanMantenimientoDetalle" EntitySet="PlanMantenimientoDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlanMantenimientoDetalle_PlanMantenimiento" Association="Self.FK_PlanMantenimientoDetalle_PlanMantenimiento">
+            <End Role="PlanMantenimiento" EntitySet="PlanMantenimiento" />
+            <End Role="PlanMantenimientoDetalle" EntitySet="PlanMantenimientoDetalle" />
+          </AssociationSet>
           <AssociationSet Name="FK_Solicitud_Equipo" Association="Self.FK_Solicitud_Equipo">
             <End Role="Equipo" EntitySet="Equipo" />
             <End Role="Solicitud" EntitySet="Solicitud" />
@@ -234,6 +329,7 @@
           <NavigationProperty Name="Local" Relationship="Self.FK_Equipo_Local" FromRole="Equipo" ToRole="Local" />
           <NavigationProperty Name="Solicitud" Relationship="Self.FK_Solicitud_Equipo" FromRole="Equipo" ToRole="Solicitud" />
           <NavigationProperty Name="OrdenServicio" Relationship="gmlModel.FK_OrdenServicio_Equipo" FromRole="Equipo" ToRole="OrdenServicio" />
+          <NavigationProperty Name="Cronograma" Relationship="gmlModel.FK_Cronograma_Equipo" FromRole="Equipo" ToRole="Cronograma" />
         </EntityType>
         <EntityType Name="Local">
           <Key>
@@ -315,13 +411,32 @@
             <End Role="PlanMantenimiento" EntitySet="PlanMantenimiento" />
           </AssociationSet>
           <EntitySet Name="Disponibilidad" EntityType="gmlModel.Disponibilidad" />
-          <AssociationSet Name="FK_Disponibilidad_PlanMantenimiento" Association="gmlModel.FK_Disponibilidad_PlanMantenimiento">
-            <End Role="PlanMantenimiento" EntitySet="PlanMantenimiento" />
-            <End Role="Disponibilidad" EntitySet="Disponibilidad" />
-          </AssociationSet>
           <AssociationSet Name="FK_Disponibilidad_Tecnico" Association="gmlModel.FK_Disponibilidad_Tecnico">
             <End Role="Tecnico" EntitySet="Tecnico" />
             <End Role="Disponibilidad" EntitySet="Disponibilidad" />
+          </AssociationSet>
+          <EntitySet Name="Cronograma" EntityType="gmlModel.Cronograma" />
+          <EntitySet Name="CronogramaDetalle" EntityType="gmlModel.CronogramaDetalle" />
+          <EntitySet Name="PlanMantenimientoDetalle" EntityType="gmlModel.PlanMantenimientoDetalle" />
+          <AssociationSet Name="FK_Cronograma_Equipo" Association="gmlModel.FK_Cronograma_Equipo">
+            <End Role="Equipo" EntitySet="Equipo" />
+            <End Role="Cronograma" EntitySet="Cronograma" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CronogramaDetalle_Cronograma" Association="gmlModel.FK_CronogramaDetalle_Cronograma">
+            <End Role="Cronograma" EntitySet="Cronograma" />
+            <End Role="CronogramaDetalle" EntitySet="CronogramaDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlanMantenimientoDetalle_CronogramaDetalle" Association="gmlModel.FK_PlanMantenimientoDetalle_CronogramaDetalle">
+            <End Role="CronogramaDetalle" EntitySet="CronogramaDetalle" />
+            <End Role="PlanMantenimientoDetalle" EntitySet="PlanMantenimientoDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlanMantenimientoDetalle_Disponibilidad" Association="gmlModel.FK_PlanMantenimientoDetalle_Disponibilidad">
+            <End Role="Disponibilidad" EntitySet="Disponibilidad" />
+            <End Role="PlanMantenimientoDetalle" EntitySet="PlanMantenimientoDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlanMantenimientoDetalle_PlanMantenimiento" Association="gmlModel.FK_PlanMantenimientoDetalle_PlanMantenimiento">
+            <End Role="PlanMantenimiento" EntitySet="PlanMantenimiento" />
+            <End Role="PlanMantenimientoDetalle" EntitySet="PlanMantenimientoDetalle" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="OrdenServicio">
@@ -397,7 +512,7 @@
           <Property Name="anio" Type="Int32" Nullable="false" />
           <Property Name="codigo_local" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Local" Relationship="gmlModel.FK_PlanMantenimiento_Local1" FromRole="PlanMantenimiento" ToRole="Local" />
-          <NavigationProperty Name="Disponibilidad" Relationship="gmlModel.FK_Disponibilidad_PlanMantenimiento" FromRole="PlanMantenimiento" ToRole="Disponibilidad" />
+          <NavigationProperty Name="PlanMantenimientoDetalle" Relationship="gmlModel.FK_PlanMantenimientoDetalle_PlanMantenimiento" FromRole="PlanMantenimiento" ToRole="PlanMantenimientoDetalle" />
         </EntityType>
         <Association Name="FK_PlanMantenimiento_Local1">
           <End Type="gmlModel.Local" Role="Local" Multiplicity="1" />
@@ -416,23 +531,12 @@
             <PropertyRef Name="codigo" />
           </Key>
           <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="codigo_plan" Type="Int32" Nullable="false" />
           <Property Name="codigo_tecnico" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="PlanMantenimiento" Relationship="gmlModel.FK_Disponibilidad_PlanMantenimiento" FromRole="Disponibilidad" ToRole="PlanMantenimiento" />
           <NavigationProperty Name="Tecnico" Relationship="gmlModel.FK_Disponibilidad_Tecnico" FromRole="Disponibilidad" ToRole="Tecnico" />
+          <Property Name="anio" Type="Int32" Nullable="false" />
+          <Property Name="semana" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="PlanMantenimientoDetalle" Relationship="gmlModel.FK_PlanMantenimientoDetalle_Disponibilidad" FromRole="Disponibilidad" ToRole="PlanMantenimientoDetalle" />
         </EntityType>
-        <Association Name="FK_Disponibilidad_PlanMantenimiento">
-          <End Type="gmlModel.PlanMantenimiento" Role="PlanMantenimiento" Multiplicity="1" />
-          <End Type="gmlModel.Disponibilidad" Role="Disponibilidad" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PlanMantenimiento">
-              <PropertyRef Name="codigo" />
-            </Principal>
-            <Dependent Role="Disponibilidad">
-              <PropertyRef Name="codigo_plan" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Disponibilidad_Tecnico">
           <End Type="gmlModel.Tecnico" Role="Tecnico" Multiplicity="1" />
           <End Type="gmlModel.Disponibilidad" Role="Disponibilidad" Multiplicity="*" />
@@ -442,6 +546,100 @@
             </Principal>
             <Dependent Role="Disponibilidad">
               <PropertyRef Name="codigo_tecnico" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Cronograma">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="anio" Type="Int32" Nullable="false" />
+          <Property Name="codigo_equipo" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Equipo" Relationship="gmlModel.FK_Cronograma_Equipo" FromRole="Cronograma" ToRole="Equipo" />
+          <NavigationProperty Name="CronogramaDetalle" Relationship="gmlModel.FK_CronogramaDetalle_Cronograma" FromRole="Cronograma" ToRole="CronogramaDetalle" />
+        </EntityType>
+        <EntityType Name="CronogramaDetalle">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="codigo_cronograma" Type="Int32" Nullable="false" />
+          <Property Name="semana" Type="Int32" Nullable="false" />
+          <Property Name="actividad" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="asignada" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="Cronograma" Relationship="gmlModel.FK_CronogramaDetalle_Cronograma" FromRole="CronogramaDetalle" ToRole="Cronograma" />
+          <NavigationProperty Name="PlanMantenimientoDetalle" Relationship="gmlModel.FK_PlanMantenimientoDetalle_CronogramaDetalle" FromRole="CronogramaDetalle" ToRole="PlanMantenimientoDetalle" />
+        </EntityType>
+        <EntityType Name="PlanMantenimientoDetalle">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="codigo_planmantenimiento" Type="Int32" Nullable="false" />
+          <Property Name="codigo_cronogramadetalle" Type="Int32" Nullable="false" />
+          <Property Name="codigo_disponibilidad" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="CronogramaDetalle" Relationship="gmlModel.FK_PlanMantenimientoDetalle_CronogramaDetalle" FromRole="PlanMantenimientoDetalle" ToRole="CronogramaDetalle" />
+          <NavigationProperty Name="Disponibilidad" Relationship="gmlModel.FK_PlanMantenimientoDetalle_Disponibilidad" FromRole="PlanMantenimientoDetalle" ToRole="Disponibilidad" />
+          <NavigationProperty Name="PlanMantenimiento" Relationship="gmlModel.FK_PlanMantenimientoDetalle_PlanMantenimiento" FromRole="PlanMantenimientoDetalle" ToRole="PlanMantenimiento" />
+        </EntityType>
+        <Association Name="FK_Cronograma_Equipo">
+          <End Type="gmlModel.Equipo" Role="Equipo" Multiplicity="1" />
+          <End Type="gmlModel.Cronograma" Role="Cronograma" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Equipo">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="Cronograma">
+              <PropertyRef Name="codigo_equipo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CronogramaDetalle_Cronograma">
+          <End Type="gmlModel.Cronograma" Role="Cronograma" Multiplicity="1" />
+          <End Type="gmlModel.CronogramaDetalle" Role="CronogramaDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cronograma">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="CronogramaDetalle">
+              <PropertyRef Name="codigo_cronograma" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlanMantenimientoDetalle_CronogramaDetalle">
+          <End Type="gmlModel.CronogramaDetalle" Role="CronogramaDetalle" Multiplicity="1" />
+          <End Type="gmlModel.PlanMantenimientoDetalle" Role="PlanMantenimientoDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CronogramaDetalle">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="PlanMantenimientoDetalle">
+              <PropertyRef Name="codigo_cronogramadetalle" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlanMantenimientoDetalle_Disponibilidad">
+          <End Type="gmlModel.Disponibilidad" Role="Disponibilidad" Multiplicity="1" />
+          <End Type="gmlModel.PlanMantenimientoDetalle" Role="PlanMantenimientoDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Disponibilidad">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="PlanMantenimientoDetalle">
+              <PropertyRef Name="codigo_disponibilidad" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlanMantenimientoDetalle_PlanMantenimiento">
+          <End Type="gmlModel.PlanMantenimiento" Role="PlanMantenimiento" Multiplicity="1" />
+          <End Type="gmlModel.PlanMantenimientoDetalle" Role="PlanMantenimientoDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PlanMantenimiento">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="PlanMantenimientoDetalle">
+              <PropertyRef Name="codigo_planmantenimiento" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -525,8 +723,39 @@
           <EntitySetMapping Name="Disponibilidad">
             <EntityTypeMapping TypeName="gmlModel.Disponibilidad">
               <MappingFragment StoreEntitySet="Disponibilidad">
+                <ScalarProperty Name="semana" ColumnName="semana" />
+                <ScalarProperty Name="anio" ColumnName="anio" />
                 <ScalarProperty Name="codigo_tecnico" ColumnName="codigo_tecnico" />
-                <ScalarProperty Name="codigo_plan" ColumnName="codigo_plan" />
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cronograma">
+            <EntityTypeMapping TypeName="gmlModel.Cronograma">
+              <MappingFragment StoreEntitySet="Cronograma">
+                <ScalarProperty Name="codigo_equipo" ColumnName="codigo_equipo" />
+                <ScalarProperty Name="anio" ColumnName="anio" />
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CronogramaDetalle">
+            <EntityTypeMapping TypeName="gmlModel.CronogramaDetalle">
+              <MappingFragment StoreEntitySet="CronogramaDetalle">
+                <ScalarProperty Name="asignada" ColumnName="asignada" />
+                <ScalarProperty Name="actividad" ColumnName="actividad" />
+                <ScalarProperty Name="semana" ColumnName="semana" />
+                <ScalarProperty Name="codigo_cronograma" ColumnName="codigo_cronograma" />
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlanMantenimientoDetalle">
+            <EntityTypeMapping TypeName="gmlModel.PlanMantenimientoDetalle">
+              <MappingFragment StoreEntitySet="PlanMantenimientoDetalle">
+                <ScalarProperty Name="codigo_disponibilidad" ColumnName="codigo_disponibilidad" />
+                <ScalarProperty Name="codigo_cronogramadetalle" ColumnName="codigo_cronogramadetalle" />
+                <ScalarProperty Name="codigo_planmantenimiento" ColumnName="codigo_planmantenimiento" />
                 <ScalarProperty Name="codigo" ColumnName="codigo" />
               </MappingFragment>
             </EntityTypeMapping>

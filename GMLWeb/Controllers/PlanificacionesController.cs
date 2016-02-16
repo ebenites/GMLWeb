@@ -34,6 +34,36 @@ namespace GMLWeb.Controllers
             return View();
         }
 
+        public ActionResult VerificarPrecondicion()
+        {
+            string anioParam = Request.Params["anio"];
+            int anio = int.Parse(anioParam);
+
+            // Verificar cronograma de actividades
+            int total = planificacionBL.totalCronogramaActividades(anio);
+            
+            if (total == 0)
+            {
+                var data = new { Type = "error", Message = "No existe un cronograma de actividades para el año seleccionado." };
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                // Verificar disponibilidad de técnicos
+                List<Tecnico> tecnicos = planificacionBL.listarTecnicos(anio, String.Empty);
+                if(tecnicos.Count == 0)
+                {
+                    var data = new { Type = "error", Message = "No existe disponibilidad de técnicos para el año seleccionado." };
+                    return Json(data, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    var data = new { Type = "success" };
+                    return Json(data, JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+
         public ActionResult ListarLocales()
         {
             // Anio actual
@@ -97,7 +127,7 @@ namespace GMLWeb.Controllers
             System.Diagnostics.Debug.WriteLine(localParam);
             System.Diagnostics.Debug.WriteLine(tecnicoParam);
 
-            // Palidando parametros
+            // Validando parametros
 
             int anio = int.Parse(anioParam);
 
@@ -110,9 +140,11 @@ namespace GMLWeb.Controllers
                 tecnicos.Add(int.Parse(item));
             }
 
-            int total = planificacionBL.generar(anio, local, tecnicos);
+            // Registrando Plan en BD
 
-            TempData["Message"] = "El Plan de Mantenimiento Preventivo se ha registrado satisfactoriamente. Se generó " + total + " órdenes de servicios.";
+            planificacionBL.generar(anio, local, tecnicos);
+
+            TempData["Message"] = "El Plan de Mantenimiento Preventivo se ha registrado satisfactoriamente.";
             TempData["anio"] = anio;
 
             return RedirectToAction("Index");

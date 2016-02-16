@@ -12,11 +12,13 @@ namespace GMLWeb.Services
 
         List<int> listarAnios();
 
+        int totalCronogramaActividades(int anio);
+
         List<PlanLocal> listarLocales(int anio, int estado);
 
         List<Tecnico> listarTecnicos(int anio, string tipo);
 
-        int generar(int vanio, int vlocal, List<int> vtecnicos);
+        void generar(int vanio, int vlocal, List<int> vtecnicos);
 
     }
 }

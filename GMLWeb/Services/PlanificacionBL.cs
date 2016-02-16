@@ -17,6 +17,11 @@ namespace GMLWeb.Services
             return planificacionDAL.listarAnios();
         }
 
+        public int totalCronogramaActividades(int anio)
+        {
+            return planificacionDAL.totalCronogramaActividades(anio);
+        }
+
         public List<PlanLocal> listarLocales(int anio, int estado)
         {
             return planificacionDAL.listarLocales(anio, estado);
@@ -27,9 +32,9 @@ namespace GMLWeb.Services
             return planificacionDAL.listarTecnicos(anio, tipo);
         }
 
-        public int generar(int vanio, int vlocal, List<int> vtecnicos)
+        public void generar(int vanio, int vlocal, List<int> vtecnicos)
         {
-            return planificacionDAL.generar(vanio, vlocal, vtecnicos);
+            planificacionDAL.generar(vanio, vlocal, vtecnicos);
         }
     }
 }

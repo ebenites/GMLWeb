@@ -17,7 +17,7 @@ namespace GMLWeb.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PlanMantenimiento()
         {
-            this.Disponibilidad = new HashSet<Disponibilidad>();
+            this.PlanMantenimientoDetalle = new HashSet<PlanMantenimientoDetalle>();
         }
     
         public int codigo { get; set; }
@@ -26,6 +26,6 @@ namespace GMLWeb.Models
     
         public virtual Local Local { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Disponibilidad> Disponibilidad { get; set; }
+        public virtual ICollection<PlanMantenimientoDetalle> PlanMantenimientoDetalle { get; set; }
     }
 }

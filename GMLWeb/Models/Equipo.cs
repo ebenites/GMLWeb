@@ -19,6 +19,7 @@ namespace GMLWeb.Models
         {
             this.Solicitud = new HashSet<Solicitud>();
             this.OrdenServicio = new HashSet<OrdenServicio>();
+            this.Cronograma = new HashSet<Cronograma>();
         }
     
         public int codigo { get; set; }
@@ -35,5 +36,7 @@ namespace GMLWeb.Models
         public virtual ICollection<Solicitud> Solicitud { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrdenServicio> OrdenServicio { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Cronograma> Cronograma { get; set; }
     }
 }

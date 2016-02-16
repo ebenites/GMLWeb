@@ -203,14 +203,20 @@
     <Compile Include="Controllers\LocalesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\OrdenServiciosController.cs" />
+    <Compile Include="Controllers\PlanificacionesController.cs" />
     <Compile Include="Controllers\SolicitudesController.cs" />
     <Compile Include="Controllers\TecnicosController.cs" />
+    <Compile Include="DAO\IPlanificacionDAL.cs" />
     <Compile Include="DAO\IProgramacionDAL.cs" />
+    <Compile Include="DAO\PlanificacionDAL.cs" />
     <Compile Include="DAO\ProgrmacionDAL.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Disponibilidad.cs">
+      <DependentUpon>GML.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Equipo.cs">
       <DependentUpon>GML.tt</DependentUpon>
     </Compile>
@@ -238,6 +244,10 @@
     <Compile Include="Models\OrdenServicio.cs">
       <DependentUpon>GML.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PlanLocal.cs" />
+    <Compile Include="Models\PlanMantenimiento.cs">
+      <DependentUpon>GML.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Solicitud.cs">
       <DependentUpon>GML.tt</DependentUpon>
     </Compile>
@@ -245,7 +255,9 @@
       <DependentUpon>GML.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IPlanificacionBL.cs" />
     <Compile Include="Services\IProgramacionBL.cs" />
+    <Compile Include="Services\PlanificacionBL.cs" />
     <Compile Include="Services\ProgramacionBL.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -435,6 +447,9 @@
     <Content Include="Views\OrdenServicios\Edit.cshtml" />
     <Content Include="Views\OrdenServicios\Index.cshtml" />
     <Content Include="Views\Solicitudes\Registrar.cshtml" />
+    <Content Include="Views\Planificaciones\Index.cshtml" />
+    <Content Include="Views\Planificaciones\ListarLocales.cshtml" />
+    <Content Include="Views\Planificaciones\ListarTecnicos.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

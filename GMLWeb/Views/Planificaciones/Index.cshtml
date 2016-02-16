@@ -1,0 +1,121 @@
+﻿@section scripts {
+    <script type="text/javascript">
+        $(function () {
+
+            filtrarLocales();
+            filtrarTecnicos();
+
+        });
+
+        function filtrarLocales() {
+            $.post('@Url.Content("~/Planificaciones/ListarLocales")', { 'anio': $('#anio').val(), 'estado': $('#estado').val() }, function (data) {
+                $('#table-locales').html(data);
+            });
+        }
+
+        function filtrarTecnicos() {
+            $.post('@Url.Content("~/Planificaciones/ListarTecnicos")', { 'anio': $('#anio').val(), 'tipo': $('#tipo').val() }, function (data) {
+                $('#table-tecnicos').html(data);
+            });
+        }
+
+        function validar(form) {
+            if ($('input[name="local"]:checked').length == 0) {
+                $('#modal-alert div.modal-body').html('Debe de seleccionar un local.');
+                $('#modal-alert').modal();
+                return false;
+            }
+            if ($('input[name="tecnico"]:checked').length == 0) {
+                $('#modal-alert div.modal-body').html('Debe de asignar por lo menos un técnico.');
+                $('#modal-alert').modal();
+                return false;
+            }
+            return true;
+        }
+    </script>
+}
+
+<div id="demo"></div>
+
+<div class="page-header">
+    <h2>Plan de Mantenimiento Preventivo</h2>
+    @{ViewBag.Title = "Plan de Mantenimiento Preventivo";}
+</div>
+
+@using (Html.BeginForm("Generar", "Planificaciones", FormMethod.Post, new { id = "form-generar", onsubmit = "return validar()" }))
+{
+    @Html.AntiForgeryToken()
+
+    <fieldset>
+        <legend>Filtrar Plan de Mantenimiento Anual</legend>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="anio">Año</label>
+                <select id="anio" name="anio" class="form-control">
+                    @foreach (var anio in ViewBag.anios)
+                    {
+                        <option value="@anio" @(ViewBag.anio==anio?"selected='selected'":"") >@anio</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-md-6 text-right">
+                <br/>
+                <input type="button" value="Buscar" class="btn btn-primary" onclick="filtrarLocales(); filtrarTecnicos();" style="width:160px"/>
+            </div>
+        </div>
+
+    </fieldset>
+    
+    <fieldset>
+        <legend>Locales</legend>
+
+        <div class="row">
+            <div class="col-md-12">
+                <label for="estado">Estado</label>
+                <select id="estado" name="estado" class="form-control" onchange="filtrarLocales()">
+                    <option value="-1">Todos</option>
+                    <option value="0">Pendientes</option>
+                    <option value="1">Generados</option>
+                </select>
+            </div>
+        </div>
+    
+        <hr/>
+
+        <div id="table-locales" class="table-responsive" style="max-height: 200px"></div>
+
+    </fieldset>
+
+    <hr/>
+
+    <fieldset>
+        <legend>Técnicos</legend>
+
+        <div class="row">
+            <div class="col-md-12">
+                <label for="tipo">Tipo</label>
+                <select id="tipo" name="tipo" class="form-control" onchange="filtrarTecnicos()">
+                    <option value="">Todos</option>
+                    <option value="I">Operario</option>
+                    <option value="E">Contratista</option>
+                </select>
+            </div>
+        </div>
+
+        <hr />
+
+        <div id="table-tecnicos" class="table-responsive" style="max-height: 200px"></div>
+
+    </fieldset>
+
+    <hr/>
+
+    <div class="row">
+        <div class="col-md-6 text-left">
+            <label>&nbsp;</label>
+            <input type="submit" value="Generar" class="btn btn-primary" style="width:120px"/>
+        </div>
+    </div>
+
+}

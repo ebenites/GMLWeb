@@ -90,7 +90,7 @@
                 <ul class="nav nav-sidebar">
                     <li>@Html.ActionLink("Registrar Solicitud de Mantenimiento Correctivo", "Registrar", "Solicitudes")</li>
                     <li>@Html.ActionLink("Programar Mantenimiento Correctivo", "Index", "Programaciones")</li>
-                    <li>@Html.ActionLink("Plan de Mantenimiento Preventivo", "Index", "Programaciones")</li>
+                    <li>@Html.ActionLink("Planificar Mantenimiento Preventivo", "Index", "Planificaciones")</li>
                 </ul>
             </div>
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -116,6 +116,27 @@
 
     <div id="footer">
         Todos los Derechos Reservados © @DateTime.Now.Year
+    </div>
+
+    <div id="modal-alert" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">Advertencia</h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+
+            </div>
+        </div>
     </div>
 
 </body>

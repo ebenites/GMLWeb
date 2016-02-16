@@ -15,6 +15,11 @@
         <AssociationConnector Association="gmlModel.FK_OrdenServicio_Equipo" />
         <AssociationConnector Association="gmlModel.FK_OrdenServicio_Solicitud" />
         <AssociationConnector Association="gmlModel.FK_OrdenServicio_Tecnico" />
+        <EntityTypeShape EntityType="gmlModel.PlanMantenimiento" Width="1.5" PointX="3" PointY="5.625" />
+        <AssociationConnector Association="gmlModel.FK_PlanMantenimiento_Local1" />
+        <EntityTypeShape EntityType="gmlModel.Disponibilidad" Width="1.5" PointX="7.5" PointY="5.625" />
+        <AssociationConnector Association="gmlModel.FK_Disponibilidad_PlanMantenimiento" />
+        <AssociationConnector Association="gmlModel.FK_Disponibilidad_Tecnico" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -12,24 +12,19 @@ namespace GMLWeb.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Tecnico
+    public partial class PlanMantenimiento
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Tecnico()
+        public PlanMantenimiento()
         {
-            this.OrdenServicio = new HashSet<OrdenServicio>();
             this.Disponibilidad = new HashSet<Disponibilidad>();
         }
     
         public int codigo { get; set; }
-        public string dni { get; set; }
-        public string nombres { get; set; }
-        public string apellidos { get; set; }
-        public string especialidad { get; set; }
-        public string tipo { get; set; }
+        public int anio { get; set; }
+        public int codigo_local { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrdenServicio> OrdenServicio { get; set; }
+        public virtual Local Local { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Disponibilidad> Disponibilidad { get; set; }
     }

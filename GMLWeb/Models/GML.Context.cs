@@ -30,5 +30,7 @@ namespace GMLWeb.Models
         public virtual DbSet<Solicitud> Solicitud { get; set; }
         public virtual DbSet<OrdenServicio> OrdenServicio { get; set; }
         public virtual DbSet<Tecnico> Tecnico { get; set; }
+        public virtual DbSet<PlanMantenimiento> PlanMantenimiento { get; set; }
+        public virtual DbSet<Disponibilidad> Disponibilidad { get; set; }
     }
 }

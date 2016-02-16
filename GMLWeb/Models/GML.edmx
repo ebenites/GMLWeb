@@ -5,6 +5,14 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="gmlModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Disponibilidad">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="codigo_plan" Type="int" Nullable="false" />
+          <Property Name="codigo_tecnico" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Equipo">
           <Key>
             <PropertyRef Name="codigo" />
@@ -39,6 +47,14 @@
           <Property Name="codigo_tecnico" Type="int" Nullable="false" />
           <Property Name="codigo_solicitud" Type="int" />
         </EntityType>
+        <EntityType Name="PlanMantenimiento">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="anio" Type="int" Nullable="false" />
+          <Property Name="codigo_local" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Solicitud">
           <Key>
             <PropertyRef Name="codigo" />
@@ -56,12 +72,36 @@
             <PropertyRef Name="codigo" />
           </Key>
           <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="dni" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="dni" Type="varchar" MaxLength="12" Nullable="false" />
           <Property Name="nombres" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="apellidos" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="apellidos" Type="varchar" MaxLength="100" />
           <Property Name="especialidad" Type="varchar" MaxLength="100" />
           <Property Name="tipo" Type="char" MaxLength="1" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Disponibilidad_PlanMantenimiento">
+          <End Role="PlanMantenimiento" Type="Self.PlanMantenimiento" Multiplicity="1" />
+          <End Role="Disponibilidad" Type="Self.Disponibilidad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PlanMantenimiento">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="Disponibilidad">
+              <PropertyRef Name="codigo_plan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Disponibilidad_Tecnico">
+          <End Role="Tecnico" Type="Self.Tecnico" Multiplicity="1" />
+          <End Role="Disponibilidad" Type="Self.Disponibilidad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tecnico">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="Disponibilidad">
+              <PropertyRef Name="codigo_tecnico" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Equipo_Local">
           <End Role="Local" Type="Self.Local" Multiplicity="1" />
           <End Role="Equipo" Type="Self.Equipo" Multiplicity="*" />
@@ -110,6 +150,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PlanMantenimiento_Local1">
+          <End Role="Local" Type="Self.Local" Multiplicity="1" />
+          <End Role="PlanMantenimiento" Type="Self.PlanMantenimiento" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Local">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="PlanMantenimiento">
+              <PropertyRef Name="codigo_local" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Solicitud_Equipo">
           <End Role="Equipo" Type="Self.Equipo" Multiplicity="1" />
           <End Role="Solicitud" Type="Self.Solicitud" Multiplicity="*" />
@@ -123,11 +175,21 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="gmlModelStoreContainer">
+          <EntitySet Name="Disponibilidad" EntityType="Self.Disponibilidad" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Equipo" EntityType="Self.Equipo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Local" EntityType="Self.Local" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrdenServicio" EntityType="Self.OrdenServicio" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlanMantenimiento" EntityType="Self.PlanMantenimiento" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Solicitud" EntityType="Self.Solicitud" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tecnico" EntityType="Self.Tecnico" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Disponibilidad_PlanMantenimiento" Association="Self.FK_Disponibilidad_PlanMantenimiento">
+            <End Role="PlanMantenimiento" EntitySet="PlanMantenimiento" />
+            <End Role="Disponibilidad" EntitySet="Disponibilidad" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Disponibilidad_Tecnico" Association="Self.FK_Disponibilidad_Tecnico">
+            <End Role="Tecnico" EntitySet="Tecnico" />
+            <End Role="Disponibilidad" EntitySet="Disponibilidad" />
+          </AssociationSet>
           <AssociationSet Name="FK_Equipo_Local" Association="Self.FK_Equipo_Local">
             <End Role="Local" EntitySet="Local" />
             <End Role="Equipo" EntitySet="Equipo" />
@@ -143,6 +205,10 @@
           <AssociationSet Name="FK_OrdenServicio_Tecnico" Association="Self.FK_OrdenServicio_Tecnico">
             <End Role="Tecnico" EntitySet="Tecnico" />
             <End Role="OrdenServicio" EntitySet="OrdenServicio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlanMantenimiento_Local1" Association="Self.FK_PlanMantenimiento_Local1">
+            <End Role="Local" EntitySet="Local" />
+            <End Role="PlanMantenimiento" EntitySet="PlanMantenimiento" />
           </AssociationSet>
           <AssociationSet Name="FK_Solicitud_Equipo" Association="Self.FK_Solicitud_Equipo">
             <End Role="Equipo" EntitySet="Equipo" />
@@ -177,6 +243,7 @@
           <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ubicacion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Equipo" Relationship="Self.FK_Equipo_Local" FromRole="Local" ToRole="Equipo" />
+          <NavigationProperty Name="PlanMantenimiento" Relationship="gmlModel.FK_PlanMantenimiento_Local1" FromRole="Local" ToRole="PlanMantenimiento" />
         </EntityType>
         <EntityType Name="Solicitud">
           <Key>
@@ -242,6 +309,20 @@
             <End Role="Tecnico" EntitySet="Tecnico" />
             <End Role="OrdenServicio" EntitySet="OrdenServicio" />
           </AssociationSet>
+          <EntitySet Name="PlanMantenimiento" EntityType="gmlModel.PlanMantenimiento" />
+          <AssociationSet Name="FK_PlanMantenimiento_Local1" Association="gmlModel.FK_PlanMantenimiento_Local1">
+            <End Role="Local" EntitySet="Local" />
+            <End Role="PlanMantenimiento" EntitySet="PlanMantenimiento" />
+          </AssociationSet>
+          <EntitySet Name="Disponibilidad" EntityType="gmlModel.Disponibilidad" />
+          <AssociationSet Name="FK_Disponibilidad_PlanMantenimiento" Association="gmlModel.FK_Disponibilidad_PlanMantenimiento">
+            <End Role="PlanMantenimiento" EntitySet="PlanMantenimiento" />
+            <End Role="Disponibilidad" EntitySet="Disponibilidad" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Disponibilidad_Tecnico" Association="gmlModel.FK_Disponibilidad_Tecnico">
+            <End Role="Tecnico" EntitySet="Tecnico" />
+            <End Role="Disponibilidad" EntitySet="Disponibilidad" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="OrdenServicio">
           <Key>
@@ -264,12 +345,13 @@
             <PropertyRef Name="codigo" />
           </Key>
           <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="dni" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="dni" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="nombres" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="apellidos" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="apellidos" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="especialidad" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="tipo" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="OrdenServicio" Relationship="gmlModel.FK_OrdenServicio_Tecnico" FromRole="Tecnico" ToRole="OrdenServicio" />
+          <NavigationProperty Name="Disponibilidad" Relationship="gmlModel.FK_Disponibilidad_Tecnico" FromRole="Tecnico" ToRole="Disponibilidad" />
         </EntityType>
         <Association Name="FK_OrdenServicio_Equipo">
           <End Type="gmlModel.Equipo" Role="Equipo" Multiplicity="1" />
@@ -303,6 +385,62 @@
               <PropertyRef Name="codigo" />
             </Principal>
             <Dependent Role="OrdenServicio">
+              <PropertyRef Name="codigo_tecnico" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PlanMantenimiento">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="anio" Type="Int32" Nullable="false" />
+          <Property Name="codigo_local" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Local" Relationship="gmlModel.FK_PlanMantenimiento_Local1" FromRole="PlanMantenimiento" ToRole="Local" />
+          <NavigationProperty Name="Disponibilidad" Relationship="gmlModel.FK_Disponibilidad_PlanMantenimiento" FromRole="PlanMantenimiento" ToRole="Disponibilidad" />
+        </EntityType>
+        <Association Name="FK_PlanMantenimiento_Local1">
+          <End Type="gmlModel.Local" Role="Local" Multiplicity="1" />
+          <End Type="gmlModel.PlanMantenimiento" Role="PlanMantenimiento" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Local">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="PlanMantenimiento">
+              <PropertyRef Name="codigo_local" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Disponibilidad">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="codigo_plan" Type="Int32" Nullable="false" />
+          <Property Name="codigo_tecnico" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="PlanMantenimiento" Relationship="gmlModel.FK_Disponibilidad_PlanMantenimiento" FromRole="Disponibilidad" ToRole="PlanMantenimiento" />
+          <NavigationProperty Name="Tecnico" Relationship="gmlModel.FK_Disponibilidad_Tecnico" FromRole="Disponibilidad" ToRole="Tecnico" />
+        </EntityType>
+        <Association Name="FK_Disponibilidad_PlanMantenimiento">
+          <End Type="gmlModel.PlanMantenimiento" Role="PlanMantenimiento" Multiplicity="1" />
+          <End Type="gmlModel.Disponibilidad" Role="Disponibilidad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PlanMantenimiento">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="Disponibilidad">
+              <PropertyRef Name="codigo_plan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Disponibilidad_Tecnico">
+          <End Type="gmlModel.Tecnico" Role="Tecnico" Multiplicity="1" />
+          <End Type="gmlModel.Disponibilidad" Role="Disponibilidad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tecnico">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="Disponibilidad">
               <PropertyRef Name="codigo_tecnico" />
             </Dependent>
           </ReferentialConstraint>
@@ -371,6 +509,24 @@
                 <ScalarProperty Name="apellidos" ColumnName="apellidos" />
                 <ScalarProperty Name="nombres" ColumnName="nombres" />
                 <ScalarProperty Name="dni" ColumnName="dni" />
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlanMantenimiento">
+            <EntityTypeMapping TypeName="gmlModel.PlanMantenimiento">
+              <MappingFragment StoreEntitySet="PlanMantenimiento">
+                <ScalarProperty Name="codigo_local" ColumnName="codigo_local" />
+                <ScalarProperty Name="anio" ColumnName="anio" />
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Disponibilidad">
+            <EntityTypeMapping TypeName="gmlModel.Disponibilidad">
+              <MappingFragment StoreEntitySet="Disponibilidad">
+                <ScalarProperty Name="codigo_tecnico" ColumnName="codigo_tecnico" />
+                <ScalarProperty Name="codigo_plan" ColumnName="codigo_plan" />
                 <ScalarProperty Name="codigo" ColumnName="codigo" />
               </MappingFragment>
             </EntityTypeMapping>

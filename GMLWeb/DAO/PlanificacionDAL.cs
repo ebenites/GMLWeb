@@ -29,7 +29,10 @@ namespace GMLWeb.DAO
 
             string sql = "select codigo, nombre, " +
                 "(select count(*) from equipo where codigo_local = l.codigo) as nequipos, " +
-                "(select count(*) from planmantenimiento where codigo_local = l.codigo and anio = @anio) estado " +
+                "(select count(*) from planmantenimiento where codigo_local = l.codigo and anio = @anio) as estado, " +
+                "(select count(*) as total from cronogramadetalle d " +
+                "inner join cronograma c on c.codigo = d.codigo_cronograma and c.anio = @anio " +
+                "inner join equipo e on e.codigo = c.codigo_equipo and e.codigo_local = l.codigo) as ncronogramas " +
                 "from local l ";
 
             if (estado != -1)

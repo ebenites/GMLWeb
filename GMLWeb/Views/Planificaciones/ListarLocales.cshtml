@@ -7,7 +7,7 @@
         <col />
         <col width="100" />
         <col width="100" />
-        <col width="120" />
+        <col width="160" />
         <col width="40" />
     </colgroup>
     <thead>
@@ -26,9 +26,9 @@
                 <td>@local.nombre</td>
                 <td>@local.nequipos</td>
                 <td>@local.codigo</td>
-                <td>@(local.estado == 0 ? "PENDIENTE" : "GENERADO")</td>
+                <td>@(local.ncronogramas != 0 ? (local.estado == 0 ? "PENDIENTE" : "GENERADO") : "SIN CRONOGRAMAS")</td>
                 <td>
-                    @if (local.estado == 0)
+                    @if (local.estado == 0 && local.ncronogramas != 0)
                     {
                         <label><input type="radio" name="local" value="@local.codigo"/></label>
                     }

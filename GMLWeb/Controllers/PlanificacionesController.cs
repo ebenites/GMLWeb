@@ -144,7 +144,7 @@ namespace GMLWeb.Controllers
 
             planificacionBL.generar(anio, local, tecnicos);
 
-            TempData["Message"] = "El Plan de Mantenimiento Preventivo se ha registrado satisfactoriamente.";
+            TempData["Message"] = "El proceso de generación ha finalizado.";
             TempData["anio"] = anio;
 
             return RedirectToAction("Index");

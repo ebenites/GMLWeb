@@ -171,7 +171,7 @@ namespace GMLWeb.Controllers
             db.SaveChanges();
 
 
-            TempData["Message"] = "La Solicitud de Mantenimiento Correctivo se ha programado satisfactoriamente.";
+            TempData["Message"] = "El proceso de registro ha finalizado.";
 
             return RedirectToAction("Index");
         }

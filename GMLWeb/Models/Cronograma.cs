@@ -12,25 +12,20 @@ namespace GMLWeb.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Tecnico
+    public partial class Cronograma
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Tecnico()
+        public Cronograma()
         {
-            this.OrdenServicio = new HashSet<OrdenServicio>();
-            this.Disponibilidad = new HashSet<Disponibilidad>();
+            this.CronogramaDetalle = new HashSet<CronogramaDetalle>();
         }
     
         public int codigo { get; set; }
-        public string dni { get; set; }
-        public string nombres { get; set; }
-        public string apellidos { get; set; }
-        public string especialidad { get; set; }
-        public string tipo { get; set; }
+        public int anio { get; set; }
+        public int codigo_equipo { get; set; }
     
+        public virtual Equipo Equipo { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrdenServicio> OrdenServicio { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Disponibilidad> Disponibilidad { get; set; }
+        public virtual ICollection<CronogramaDetalle> CronogramaDetalle { get; set; }
     }
 }

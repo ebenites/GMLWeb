@@ -18,6 +18,7 @@ namespace GMLWeb.Models
         public Local()
         {
             this.Equipo = new HashSet<Equipo>();
+            this.PlanMantenimiento = new HashSet<PlanMantenimiento>();
         }
     
         public int codigo { get; set; }
@@ -26,5 +27,7 @@ namespace GMLWeb.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Equipo> Equipo { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PlanMantenimiento> PlanMantenimiento { get; set; }
     }
 }

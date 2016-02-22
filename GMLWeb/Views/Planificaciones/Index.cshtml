@@ -66,7 +66,7 @@
         <div class="row">
             <div class="form-group col-md-6">
                 <label for="anio">Año</label>
-                <select id="anio" name="anio" class="form-control"><!-- disabled="disabled" , precondición que estemos dentro del mes de octubre a diciembre -->
+                <select id="anio" name="anio" class="form-control" disabled="disabled">
                     @foreach (var anio in ViewBag.anios)
                     {
                         <option value="@anio" @(ViewBag.anio==anio?"selected='selected'":"") >@anio</option>

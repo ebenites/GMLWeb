@@ -45,6 +45,10 @@ textarea {
 	background-color: #F4D016;
 }
 
+.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus{
+    background-color: #F4D016;
+}
+
 .navbar-logo{
 	padding: 0px 10px 0px 10px;
 	display: none;
@@ -116,3 +120,4 @@ textarea {
 .container-fluid .row {
     margin-right: 0px;
 }
+

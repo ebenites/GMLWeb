@@ -28,7 +28,7 @@
 			// Menu
 			$(".navbar button.btn-sidebar").click(function(e) {
 		        $(".sidebar").slideToggle();
-		    });
+			});
 
 		});
     </script>
@@ -69,16 +69,37 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 @Html.Partial("_LoginPartial")
-                <form class="navbar-form navbar-right">
-                    <input type="text" class="form-control" placeholder="Buscar...">
-                </form>
+
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Opciones <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Registrar Solicitud de Mantenimiento Correctivo", "Registrar", "Solicitudes")</li>
+                            <li>@Html.ActionLink("Programar Mantenimiento Correctivo", "Index", "Programaciones")</li>
+                            <li>@Html.ActionLink("Planificar Mantenimiento Preventivo", "Index", "Planificaciones")</li>
+                            <li role="separator" class="divider"></li>
+                            <li>@Html.ActionLink("Locales", "Index", "Locales")</li>
+                            <li>@Html.ActionLink("Equipos", "Index", "Equipos")</li>
+                            <li>@Html.ActionLink("Solicitudes", "Index", "Solicitudes")</li>
+                            <li>@Html.ActionLink("OrdenServicios", "Index", "OrdenServicios")</li>
+                            <li>@Html.ActionLink("Tecnicos", "Index", "Tecnicos")</li>
+                            <li>@Html.ActionLink("PlanMantenimientos", "Index", "PlanMantenimientos")</li>
+                            <li>@Html.ActionLink("PlanMantenimientoDetalles", "Index", "PlanMantenimientoDetalles")</li>
+                            <li>@Html.ActionLink("Disponibilidades", "Index", "Disponibilidades")</li>
+                            <li>@Html.ActionLink("Cronogramas", "Index", "Cronogramas")</li>
+                            <li>@Html.ActionLink("CronogramaDetalles", "Index", "CronogramaDetalles")</li>
+                        </ul>
+                    </li>
+                </ul>
+
             </div>
         </div>
     </nav>
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-3 col-md-2 sidebar">
+            <!--div class="col-sm-3 col-md-2 sidebar">
                 <ul class="nav nav-sidebar">
                     <li class="active">@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("Locales", "Index", "Locales")</li>
@@ -98,24 +119,25 @@
                     <li>@Html.ActionLink("Planificar Mantenimiento Preventivo", "Index", "Planificaciones")</li>
                 </ul>
             </div>
-            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"-->
+            <div class="col-sm-12 col-md-12 main">
 
-                @{
-                    string message = TempData["Message"] as string;
-                    if (message != null)
-                    {
-                        <div class="alert alert-warning alert-dismissible fade in" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            @message
-                        </div>
+                    @{
+                        string message = TempData["Message"] as string;
+                        if (message != null)
+                        {
+                            <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                @message
+                            </div>
+                        }
                     }
-                }
 
-                @RenderBody()
+                    @RenderBody()
 
-            </div>
+                </div>
         </div>
     </div>
 

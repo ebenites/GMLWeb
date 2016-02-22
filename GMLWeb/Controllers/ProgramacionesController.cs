@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using GMLWeb.Models;
 using System.Globalization;
+using GMLWeb.Services;
 
 namespace GMLWeb.Controllers
 {
@@ -15,6 +16,8 @@ namespace GMLWeb.Controllers
     {
 
         private GMLConnectionString db = new GMLConnectionString();
+
+        private IProgramacionBL programacionBL = new ProgramacionBL();
 
         // GET: Solicitud
         public ActionResult Index()
@@ -115,8 +118,9 @@ namespace GMLWeb.Controllers
                                 codigo = t.codigo,
                                 nombrescompleto = t.nombres + " " + t.apellidos
                             });
+                            
             ViewBag.tecnicos = new SelectList(tecnicos, "codigo", "nombrescompleto"); ;
-
+                        
             // Solicitud
             ViewBag.solicitud = db.Solicitud.Include(s => s.Equipo).Include(s => s.Equipo.Local).Single(x => x.codigo == id);
 
@@ -141,35 +145,7 @@ namespace GMLWeb.Controllers
             int equipoAsInt = int.Parse(equipo);
             int codigoAsInt = int.Parse(codigo);
 
-            // Registrando la OS
-
-            OrdenServicio orden = new OrdenServicio {
-                numero = "OS",
-                fecha = fecprogramadaAsDateTime,
-                estado = "P",
-                codigo_equipo = equipoAsInt,
-                codigo_tecnico = tecnicoAsInt,
-                codigo_solicitud = codigoAsInt
-            };
-            db.OrdenServicio.Add(orden);
-
-            // Cambiando el estado de la solicitud
-            
-            var solicitud = db.Solicitud.Include(s => s.Equipo).Include(s => s.Equipo.Local).Single(x => x.codigo == codigoAsInt);
-            solicitud.estado = "G";
-
-            // Grabando cambios
-
-            db.SaveChanges();
-
-            // Actualizando el numero de OS
-
-            orden.numero = "OS-" + DateTime.Now.ToString("yyyy-MM-") + orden.codigo.ToString("D4") ;
-
-            // Grabando cambios
-
-            db.SaveChanges();
-
+            programacionBL.registrar(codigoAsInt, equipoAsInt, tecnicoAsInt, fecprogramadaAsDateTime);
 
             TempData["Message"] = "El proceso de registro ha finalizado.";
 

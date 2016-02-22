@@ -13,7 +13,7 @@ namespace GMLWeb.Controllers
     public class EquiposController : Controller
     {
         private GMLConnectionString db = new GMLConnectionString();
-
+        //prueba
         // GET: Equipos
         public ActionResult Index()
         {

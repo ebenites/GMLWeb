@@ -8,5 +8,8 @@ namespace GMLWeb.DAO
 {
     interface IProgramacionDAL
     {
+
+        void registrar(int codigo, int equipo, int tecnico, DateTime fecprogramada);
+
     }
 }

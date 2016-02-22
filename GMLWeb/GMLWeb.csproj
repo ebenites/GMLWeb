@@ -214,7 +214,7 @@
     <Compile Include="DAO\IPlanificacionDAL.cs" />
     <Compile Include="DAO\IProgramacionDAL.cs" />
     <Compile Include="DAO\PlanificacionDAL.cs" />
-    <Compile Include="DAO\ProgrmacionDAL.cs" />
+    <Compile Include="DAO\ProgramacionDAL.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

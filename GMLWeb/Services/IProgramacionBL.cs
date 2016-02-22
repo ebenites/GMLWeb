@@ -8,5 +8,8 @@ namespace GMLWeb.Services
 {
     interface IProgramacionBL
     {
+
+        void registrar(int codigo, int equipo, int tecnico, DateTime fecprogramada);
+
     }
 }

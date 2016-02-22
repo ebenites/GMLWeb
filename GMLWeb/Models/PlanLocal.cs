@@ -10,6 +10,7 @@ namespace GMLWeb.Models
         public int codigo { get; set; }
         public string nombre { get; set; }
         public int nequipos { get; set; }
+        public int ncronogramas { get; set; }
         public int estado { get; set; }
     }
 }

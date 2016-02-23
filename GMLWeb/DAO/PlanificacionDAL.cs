@@ -18,9 +18,10 @@ namespace GMLWeb.DAO
             int anio_max = DateTime.Now.Year + 1;
             int anio_min = db.Database.SqlQuery<int>("SELECT min(anio) FROM PlanMantenimiento").Single();
             List<int> anios = new List<int>();
-            for (int anio = anio_max; anio >= anio_min; anio--) {
+            /*for (int anio = anio_max; anio >= anio_min; anio--) {
                 anios.Add(anio);
-            }
+            }*/
+            anios.Add(anio_max);
             return anios;
         }
 
@@ -115,12 +116,22 @@ namespace GMLWeb.DAO
                     foreach (CronogramaDetalle detalle in detalles)
                     {
 
-                        System.Diagnostics.Debug.WriteLine("CronogramaDetalle:" + detalle);
+                        System.Diagnostics.Debug.WriteLine("CronogramaDetalle:" + detalle.codigo);
 
                         // Seleccionando Técnico disponible
+                        int b = vtecnicos.Count;
                         do
                         {
+
+                            if (b-- == 0)
+                            {
+                                throw new Exception("No existe técnicos disponibles para la semana " + detalle.semana + " en el año " + detalle.Cronograma.anio);
+                            }
+
+                            System.Diagnostics.Debug.WriteLine("i:" + i);
                             int vtecnico = vtecnicos.ElementAt(i++);
+                            if (i == vtecnicos.Count) i = 0;
+
                             List<Disponibilidad> disponibilidades = db.Disponibilidad.Where(x => x.codigo_tecnico == vtecnico && x.anio == detalle.Cronograma.anio && x.semana == detalle.semana).ToList();
                             System.Diagnostics.Debug.WriteLine("Disponibilidad: TECNICO: " + vtecnico + " ANIO:" + detalle.Cronograma.anio + " SEMANA:" + detalle.semana);
                             System.Diagnostics.Debug.WriteLine("Disponible?:" + disponibilidades.Count);
@@ -155,12 +166,7 @@ namespace GMLWeb.DAO
 
                                 break;
                             }
-
-                            if(i == vtecnicos.Count)
-                            {
-                                throw new Exception("No existe técnicos disponibles para la semana " + detalle.semana + " en el año " + detalle.Cronograma.anio);
-                            }
-
+                            
                         } while (true);
                         
                     }
